@@ -89,7 +89,7 @@ Resumen del flujo — el paso a paso completo, con solución de problemas, está
 
 1. **Supabase** — crear proyecto, ejecutar `db/setup.sql` en el SQL Editor, copiar la cadena del **Transaction pooler** (puerto `6543`).
 2. **GitHub** — subir el código (sin `.env` ni `node_modules`).
-3. **Render** — New Web Service → este repositorio → Build `npm install` · Start `node server.js` · Instance **Free** → variable de entorno `DATABASE_URL`.
+3. **Render** — New Web Service → este repositorio → Build `npm install`. Start `node server.js`. Instance **Free** → variable de entorno `DATABASE_URL`.
 
 > El plan gratuito de Render duerme el servicio tras ~15 min sin tráfico; el primer acceso tarda 30–60 s. El de Supabase pausa el proyecto tras 7 días de inactividad (**Restore project** lo reactiva).
 
