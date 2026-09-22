@@ -91,7 +91,7 @@ Resumen del flujo — el paso a paso completo, con solución de problemas, está
 2. **GitHub** — subir el código (sin `.env` ni `node_modules`).
 3. **Render** — New Web Service → este repositorio → Build `npm install` · Start `node server.js` · Instance **Free** → variable de entorno `DATABASE_URL`.
 
-> ⏱️ El plan gratuito de Render duerme el servicio tras ~15 min sin tráfico; el primer acceso tarda 30–60 s. El de Supabase pausa el proyecto tras 7 días de inactividad (**Restore project** lo reactiva).
+> El plan gratuito de Render duerme el servicio tras ~15 min sin tráfico; el primer acceso tarda 30–60 s. El de Supabase pausa el proyecto tras 7 días de inactividad (**Restore project** lo reactiva).
 
 ## Pruebas de rendimiento
 
@@ -120,8 +120,8 @@ El protocolo completo — latencia con y sin base de datos, escrituras bajo conc
 
 | Semana | Tema | Este repositorio |
 |--------|------|------------------|
-| **7** | Vista Cliente-Servidor | ✅ Versión actual: `server.js` plano + despliegue |
-| **8** | Arquitectura en Capas | 🔜 Refactorización del mismo sistema (presentación · aplicación · dominio · persistencia) |
+| **7** | Vista Cliente-Servidor | Versión actual: `server.js` plano + despliegue |
+| **8** | Arquitectura en Capas | Refactorización del mismo sistema (presentación · aplicación · dominio · persistencia) |
 | **9** | Reglas de dependencia | DIP · patrón Repository · inyección de dependencias |
 
 ---
