@@ -1,6 +1,6 @@
 <div align="center">
 
-# Reserva de Citas: Demo Cliente-Servidor
+# Reserva de Citas — Demo en Arquitectura de Capas
 
 Sistema de referencia del curso **Arquitectura de Sistemas I** · Universidad Central · 2026-2
 
@@ -10,119 +10,100 @@ Sistema de referencia del curso **Arquitectura de Sistemas I** · Universidad Ce
 [![Deploy](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white)](https://render.com)
 
 **[🌐 Demo en vivo](https://eng-demo-citas.onrender.com)** ·
-**[📖 Guía de despliegue completa](https://eng-demo-citas.onrender.com/blog-semana-7.html)**
+**[📖 Guía de despliegue](https://eng-demo-citas.onrender.com/blog-semana-7.html)** ·
+**[🔬 Detalle del refactor](docs/REFACTOR.md)**
 
 </div>
 
 ---
 
-Aplicación mínima que demuestra el estilo arquitectónico **Cliente-Servidor** con tres piezas que residen en lugares físicamente distintos y se comunican por la red. El cliente es deliberadamente "tonto" (solo muestra datos y envía peticiones); toda la lógica de negocio y el acceso a datos viven en el servidor.
+Aplicación mínima que demuestra dos vistas complementarias del mismo sistema: la vista **Cliente-Servidor** (quién habla con quién por la red — Semana 7) y la vista **en capas** (cómo se organiza el servidor por dentro — Semana 8). Esta versión es la refactorización en capas del `server.js` original: el comportamiento es idéntico, el cliente y la base de datos no cambiaron ni una línea.
 
-> **Nota conceptual:** Cliente-Servidor nombra una *relación* de solicitud/provisión, no una cantidad de piezas. El navegador es cliente de Express, y Express, a su vez, es cliente de PostgreSQL.
+> **La idea central del refactor:** se reorganizó el interior del servidor sin que nadie afuera lo note. Las capas organizan responsabilidades; no agregan servidores ni cambian el contrato HTTP.
 
-## Arquitectura
-
-```mermaid
-flowchart LR
-    C["🖥️ Cliente web<br/>public/index.html"] -- "HTTP · JSON" --> S["⚙️ Servidor Express<br/>server.js · Render"]
-    S -- "SQL · SSL" --> D[("🗄️ PostgreSQL<br/>Supabase")]
-    G["GitHub<br/>origen del código"] -. "despliegue automático" .-> S
-```
-
-En esta versión (Semana 7), el servidor concentra **todo** en un archivo: rutas, reglas de negocio y SQL conviven en `server.js`. Es un punto de partida deliberado — en la Semana 8 se refactoriza en capas.
-
-### Flujo de una reserva
+## Arquitectura en capas
 
 ```mermaid
-sequenceDiagram
-    participant N as Navegador
-    participant E as Express (Render)
-    participant P as PostgreSQL (Supabase)
-    N->>E: POST /api/citas { paciente, profesional, fecha }
-    E->>E: Aplicar reglas de negocio
-    E->>P: ¿Horario disponible?
-    P-->>E: libre / ocupado
-    E->>P: INSERT cita
-    P-->>E: id generado
-    E-->>N: 201 Created { id }
+flowchart TB
+    C["🖥️ Cliente web<br/>public/index.html — sin cambios"] -- "HTTP · JSON" --> P
+    subgraph S["⚙️ Servidor Express en Render — server.js solo cablea"]
+        P["Presentación<br/>src/presentacion/citasRoutes.js"] --> A["Aplicación<br/>src/aplicacion/citaService.js"]
+        A --> D["Dominio<br/>src/dominio/reglasDeAgenda.js<br/>(reglas puras, cero dependencias)"]
+        A --> R["Persistencia<br/>src/persistencia/*Repository.js"]
+    end
+    R -- "SQL · SSL" --> PG[("🗄️ PostgreSQL<br/>Supabase — sin cambios")]
 ```
 
-## API
+La dirección de las flechas es la regla: las dependencias apuntan hacia adentro/abajo. El dominio no importa nada (`grep require src/dominio/*` devuelve cero resultados) — por eso sus reglas se pueden probar aisladas y sobrevivirían a un cambio de framework o de base de datos.
 
-| Método | Ruta | Descripción | Respuestas |
-|--------|------|-------------|-----------|
-| `GET` | `/api/salud` | Verificación de vida del servidor | `200` |
-| `GET` | `/api/profesionales` | Catálogo de profesionales | `200` |
-| `GET` | `/api/citas` | Lista de citas (con nombre del profesional) | `200` |
-| `POST` | `/api/citas` | Crea una cita aplicando las reglas de negocio | `201` creada · `400` datos faltantes o fecha inválida/pasada · `409` agenda ocupada |
+### ¿A dónde se fue cada pedazo del `server.js` original?
 
-**Reglas de negocio** (aplicadas siempre en el servidor, aunque el cliente intente evadirlas):
-datos obligatorios · fecha válida · fecha futura · un profesional no puede tener dos citas a la misma hora.
+| En la Semana 7 estaba... | Ahora vive en... | Por qué ahí |
+|---|---|---|
+| Reglas de negocio (datos, fechas, agenda) | `src/dominio/reglasDeAgenda.js` | Son del negocio, no del protocolo ni de la base |
+| Todos los `pool.query` (SQL) | `src/persistencia/*Repository.js` | Guardar y consultar es persistencia |
+| Los códigos HTTP 400/409/500 | `src/presentacion/citasRoutes.js` | El protocolo es asunto de la presentación |
+| El orden de los pasos al reservar | `src/aplicacion/citaService.js` | Coordinar casos de uso es aplicación |
+| `app.listen`, middlewares | `server.js` (30 líneas) | Solo arranque y cableado |
+
+El análisis completo, con el flujo de una solicitud y el mapa a las diapositivas del curso, está en [`docs/REFACTOR.md`](docs/REFACTOR.md).
+
+## API — sin cambios
+
+La API es idéntica a la de la Semana 7 (ese es el punto):
+
+| Método | Ruta | Respuestas |
+|--------|------|-----------|
+| `GET` | `/api/salud` | `200` |
+| `GET` | `/api/profesionales` | `200` |
+| `GET` | `/api/citas` | `200` |
+| `POST` | `/api/citas` | `201` · `400` datos/fecha · `409` agenda ocupada |
+
+La diferencia: ahora el dominio lanza errores simbólicos (`FECHA_PASADA`, `AGENDA_OCUPADA`) y la presentación los traduce a códigos HTTP. El dominio nunca supo que existe HTTP.
 
 ## Estructura del proyecto
 
 ```
 demo-cliente-servidor/
-├── server.js               # Servidor Express: rutas + reglas + SQL (todo junto, a propósito)
-├── public/
-│   ├── index.html          # Cliente web: solo fetch() y pintar — cero reglas
-│   └── blog-semana-7.html  # Guía de despliegue publicada por el propio servidor
-├── db/
-│   └── setup.sql           # Tablas y datos semilla (se ejecuta una vez en Supabase)
-├── package.json            # Dependencias: express, pg, cors, dotenv
-└── .env.example            # Plantilla de configuración (la real nunca se sube)
+├── server.js                        # 30 líneas: arranque y cableado
+├── src/
+│   ├── presentacion/citasRoutes.js  # HTTP ↔ aplicación; decide 400/409/500
+│   ├── aplicacion/citaService.js    # Casos de uso como recetas
+│   ├── dominio/reglasDeAgenda.js    # Reglas puras — cero requires
+│   └── persistencia/                # Único lugar con SQL y conexión
+│       ├── db.js
+│       ├── citaRepository.js
+│       └── profesionalRepository.js
+├── public/index.html                # Cliente: byte a byte igual a la Semana 7
+├── db/setup.sql                     # Base de datos: sin cambios
+└── docs/REFACTOR.md                 # Autopsia del refactor
 ```
 
-## Ejecución local
+## Ejecución local y despliegue
 
-Requiere [Node.js](https://nodejs.org) ≥ 18 y una base de datos en Supabase ([guía completa](https://eng-demo-citas.onrender.com/blog-semana-7.html), sección 3).
+Idénticos a la Semana 7 — nada del despliegue cambió con el refactor:
 
 ```bash
 npm install
-cp .env.example .env     # editar y pegar la cadena del Transaction pooler de Supabase
+cp .env.example .env     # cadena del Transaction pooler de Supabase
 npm start                # → http://localhost:3000
 ```
 
-## Despliegue en la nube (planes gratuitos)
+En Render no hay que tocar nada: el mismo servicio redespliega este commit automáticamente y sigue funcionando igual. Guía completa: [blog de despliegue](https://eng-demo-citas.onrender.com/blog-semana-7.html).
 
-Resumen del flujo — el paso a paso completo, con solución de problemas, está en la [guía de despliegue](https://eng-demo-citas.onrender.com/blog-semana-7.html):
+## Nota sobre concurrencia
 
-1. **Supabase** — crear proyecto, ejecutar `db/setup.sql` en el SQL Editor, copiar la cadena del **Transaction pooler** (puerto `6543`).
-2. **GitHub** — subir el código (sin `.env` ni `node_modules`).
-3. **Render** — New Web Service → este repositorio → Build `npm install`. Start `node server.js`. Instance **Free** → variable de entorno `DATABASE_URL`.
-
-> El plan gratuito de Render duerme el servicio tras ~15 min sin tráfico; el primer acceso tarda 30–60 s. El de Supabase pausa el proyecto tras 7 días de inactividad (**Restore project** lo reactiva).
-
-## Pruebas de rendimiento
-
-El sistema se mide con [autocannon](https://github.com/mcollina/autocannon) (throughput y latencia por percentiles):
-
-```bash
-npx autocannon -c 10 -d 20 https://eng-demo-citas.onrender.com/api/citas
-```
-
-El protocolo completo — latencia con y sin base de datos, escrituras bajo concurrencia y experimentos comparativos — está en la sección 7 de la guía. Nota: la prueba de escrituras concurrentes *observa* la regla de agenda bajo carga; no garantiza exclusión (la implementación verifica-e-inserta en dos pasos, sin restricción de unicidad — una condición de carrera conservada deliberadamente como material de clase).
-
-## Mapa del código ↔ conceptos de la clase
-
-| Concepto (estilo Cliente-Servidor) | Dónde verlo en este proyecto |
-|---|---|
-| Proveedor y consumidor | `server.js` (proveedor) · `public/index.html` (consumidor) |
-| El cliente solo representa datos y detona acciones | `index.html`: solo `fetch()` + pintar; cero reglas |
-| Centralización de datos y lógica | Las reglas de negocio viven en `POST /api/citas` del servidor |
-| Comunicación por red y protocolos | HTTP entre cliente y servidor · SQL/SSL entre servidor y Supabase |
-| Múltiples clientes, un servidor | Todos los dispositivos del curso contra la misma URL |
-| "Todo o nada" | Suspender el servicio en Render y recargar el cliente |
-| Tecnologías distintas, mismo protocolo | HTML/JS en el navegador · Node en el servidor · Postgres en los datos |
-| Roles según la interacción | Express: servidor del navegador y cliente de PostgreSQL |
+El refactor conserva deliberadamente la condición de carrera de la Semana 7 (verificar disponibilidad y luego insertar, en dos pasos, sin restricción de unicidad). Las capas organizan responsabilidades; no resuelven concurrencia — la exclusión real se garantiza en el nivel de datos con un índice de unicidad, y ese es un ejercicio de la sesión de la Semana 8.
 
 ## Ruta del curso
 
 | Semana | Tema | Este repositorio |
 |--------|------|------------------|
-| **7** | Vista Cliente-Servidor | Versión actual: `server.js` plano + despliegue |
-| **8** | Arquitectura en Capas | Refactorización del mismo sistema (presentación, aplicación, dominio, persistencia) |
-| **9** | Reglas de dependencia | DIP, patrón Repository, inyección de dependencias |
+| **7** | Vista Cliente-Servidor | ✅ `server.js` plano + despliegue ([ver commit inicial](../../commits/main)) |
+| **8** | Arquitectura en Capas | ✅ Versión actual: refactor en `src/` — mismo comportamiento |
+| **9** | Reglas de dependencia | 🔜 DIP · patrón Repository · inyección de dependencias |
+
+El diff entre las dos primeras semanas se lee en el historial de commits: en rojo el archivo único, en verde las capas.
 
 ---
 
