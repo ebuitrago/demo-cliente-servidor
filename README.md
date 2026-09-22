@@ -18,7 +18,7 @@ Sistema de referencia del curso **Arquitectura de Sistemas I** · Universidad Ce
 
 Aplicación mínima que demuestra el estilo arquitectónico **Cliente-Servidor** con tres piezas que residen en lugares físicamente distintos y se comunican por la red. El cliente es deliberadamente "tonto" (solo muestra datos y envía peticiones); toda la lógica de negocio y el acceso a datos viven en el servidor.
 
-> **Nota conceptual:** Cliente-Servidor nombra una *relación* de solicitud/provisión, no una cantidad de piezas. El navegador es cliente de Express — y Express, a su vez, es cliente de PostgreSQL.
+> **Nota conceptual:** Cliente-Servidor nombra una *relación* de solicitud/provisión, no una cantidad de piezas. El navegador es cliente de Express, y Express, a su vez, es cliente de PostgreSQL.
 
 ## Arquitectura
 
