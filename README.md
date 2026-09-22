@@ -121,8 +121,8 @@ El protocolo completo — latencia con y sin base de datos, escrituras bajo conc
 | Semana | Tema | Este repositorio |
 |--------|------|------------------|
 | **7** | Vista Cliente-Servidor | Versión actual: `server.js` plano + despliegue |
-| **8** | Arquitectura en Capas | Refactorización del mismo sistema (presentación · aplicación · dominio · persistencia) |
-| **9** | Reglas de dependencia | DIP · patrón Repository · inyección de dependencias |
+| **8** | Arquitectura en Capas | Refactorización del mismo sistema (presentación, aplicación, dominio, persistencia) |
+| **9** | Reglas de dependencia | DIP, patrón Repository, inyección de dependencias |
 
 ---
 
