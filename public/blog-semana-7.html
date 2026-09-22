@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1E1E1E">
-<title>Instalación del sistema de reserva de citas: Supabase, GitHub y Render</title>
+<title>Instalación del sistema de reserva de citas — Supabase, GitHub y Render</title>
 <style>
   :root { --bg:#1E1E1E; --panel:#232323; --panel2:#191919; --line:#2E2E2E; --line2:#3A3A3A;
           --fg:#EDEDED; --fg2:#B4B4B4; --fg3:#8F8F8F; --green:#3ECF8E; --green-dim:#6BBF9C;
@@ -82,7 +82,7 @@
 
 <nav class="top"><div class="in">
   <span class="marca"><span class="dot"></span>arquitectura de sistemas</span>
-  <span class="curso">2026-2; Semana 7</span>
+  <span class="curso">2026-2 · Semana 7</span>
 </div></nav>
 
 <main>
@@ -91,10 +91,10 @@
 <span class="chip">cliente-servidor</span>
 <h1>Instalación del sistema de reserva de citas con Supabase, GitHub y Render</h1>
 <p class="bajada">Guía de despliegue paso a paso de una aplicación Cliente-Servidor. Al finalizar, el sistema queda publicado en una URL de acceso libre.</p>
-<p class="meta">Publicado el 15 Sep 2026; 12 min de lectura</p>
+<p class="meta">Publicado el 15 Sep 2026 · 12 min de lectura</p>
 <div class="autor">
   <div class="avatar">EB</div>
-  <div class="quien"><b>Elias Buitrago Bolivar</b><span>Arquitectura de Sistemas I, Universidad Central</span></div>
+  <div class="quien"><b>Elias Buitrago Bolivar</b><span>Arquitectura de Sistemas I · Universidad Central</span></div>
 </div>
 
 <h2>1. Introducción</h2>
@@ -136,6 +136,8 @@
 <figcaption>Figura 1. Diagrama de contexto: usuario, sistema, base de datos y origen del código.</figcaption>
 </figure>
 
+<p>Una precisión conceptual antes de continuar: Cliente-Servidor nombra una <strong>relación de solicitud y provisión entre dos partes</strong>, no una cantidad fija de piezas. En este sistema, el navegador actúa como cliente del servidor Express; y el servidor Express, a su vez, actúa como <em>cliente</em> de PostgreSQL. Un mismo componente puede desempeñar ambos roles según la interacción que se observe.</p>
+
 <p>El diagrama de componentes abre la caja del servidor. En esta versión, los cuatro componentes internos conviven en un solo archivo (<code>server.js</code>); las reglas de negocio, resaltadas en color distinto, se extraerán a su propia capa en la Semana 8.</p>
 
 <figure>
@@ -170,7 +172,7 @@
 <figcaption>Figura 2. Diagrama de componentes: interior del servidor y sus conexiones.</figcaption>
 </figure>
 
-<p>La instalación consta de tres partes en orden estricto: primero la base de datos (Supabase), luego el código en un repositorio (GitHub) y por último el servidor (Render). Render necesita leer el código desde GitHub, y el servidor necesita la cadena de conexión que entrega Supabase; por eso el orden no puede invertirse.</p>
+<p>La instalación consta de tres partes en orden estricto: primero la base de datos (Supabase), luego el código en un repositorio (GitHub) y por último el servidor (Render). Render necesita leer el código desde GitHub, y el servidor necesita la cadena de conexión que entrega Supabase; por eso el orden no puede invertirse. GitHub, Render y Supabase se usan aquí como la infraestructura mínima necesaria para observar el estilo Cliente-Servidor funcionando sobre una red real; el tratamiento formal del despliegue como tema corresponde a semanas posteriores del curso.</p>
 
 <h2>2. Requisitos previos</h2>
 <ol>
@@ -181,7 +183,7 @@
 </ol>
 <p>Todo el procedimiento usa los planes gratuitos de los tres servicios y no requiere tarjeta de crédito. El flujo principal se realiza completo desde el navegador; no es necesario instalar programas.</p>
 
-<h2>3. Paso 1. Crear la base de datos en Supabase</h2>
+<h2>3. Paso 1 — Crear la base de datos en Supabase</h2>
 
 <h3>3.1 Crear el proyecto</h3>
 <ol>
@@ -219,7 +221,7 @@
 <div class="aviso"><strong>Advertencia:</strong> no se debe usar la opción <em>Direct connection</em>. Esa conexión usa IPv6 y falla desde el plan gratuito de Render. La cadena correcta es siempre la del <em>Transaction pooler</em>.</div>
 <div class="clave"><strong>Seguridad:</strong> la cadena completa contiene la contraseña de la base de datos. No debe subirse a GitHub ni compartirse; solo se pega en la configuración de Render.</div>
 
-<h2>4. Paso 2. Subir el código a GitHub</h2>
+<h2>4. Paso 2 — Subir el código a GitHub</h2>
 <ol>
   <li>En github.com se presiona el botón <strong>+</strong> (esquina superior derecha) y luego <strong>New repository</strong>.</li>
   <li><strong>Repository name:</strong> <code>demo-citas</code> (nombre libre). Se deja <strong>Public</strong> y se presiona <strong>Create repository</strong>.</li>
@@ -235,7 +237,7 @@
 </ol>
 <div class="aviso"><strong>No se deben subir:</strong> el archivo <code>.env</code> (si se creó localmente, contiene la contraseña) ni la carpeta <code>node_modules</code> (miles de archivos de librerías que Render reinstala solo con <code>npm install</code>).</div>
 
-<h2>5. Paso 3. Desplegar el servidor en Render</h2>
+<h2>5. Paso 3 — Desplegar el servidor en Render</h2>
 <ol>
   <li>Se ingresa a render.com y se inicia sesión con GitHub.</li>
   <li>Se presiona <strong>New +</strong> → <strong>Web Service</strong>.</li>
@@ -294,7 +296,7 @@
 <pre><code>npx autocannon -c 10 -d 20 https://demo-citas.onrender.com/api/citas</code></pre>
 
 <h3>7.4 Prueba 3 — Escrituras (POST)</h3>
-<p>Se mide la creación de citas con 5 conexiones durante 15 segundos. Como todas las peticiones llevan el mismo profesional y la misma hora, la primera se inserta y las demás reciben el código 409 (regla de agenda ocupada): ese comportamiento es correcto y demuestra que las reglas del servidor se aplican también bajo carga.</p>
+<p>Se mide la creación de citas con 5 conexiones durante 15 segundos. Como todas las peticiones llevan el mismo profesional y la misma hora, se espera que una se inserte y las demás reciban el código 409 (regla de agenda ocupada). La prueba permite observar cómo se comporta la regla actual bajo concurrencia — no garantiza exclusión: la implementación verifica la disponibilidad y luego inserta, en dos pasos separados y sin restricción de unicidad en la base de datos, de modo que dos peticiones simultáneas podrían comprobar "libre" al mismo tiempo e insertar ambas (condición de carrera). Garantizar la exclusión requiere una restricción en el nivel de los datos: el índice de unicidad del experimento 7.6.3.</p>
 <pre><code>npx autocannon -c 5 -d 15 -m POST -H "Content-Type: application/json" -b "{\"paciente\":\"Prueba Carga\",\"profesional_id\":1,\"fecha_hora\":\"2027-01-01T10:00:00Z\"}" https://demo-citas.onrender.com/api/citas</code></pre>
 
 <h3>7.5 Lectura de los resultados</h3>
