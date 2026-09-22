@@ -4,18 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reserva de Citas — Cliente</title>
-<!-- ==========================================================================
-CLIENTE (el "consumidor" del estilo Cliente-Servidor)
------------------------------------------------------------------------------
-Este archivo ES la aplicación cliente. Fíjense en lo que NO tiene:
-  - No tiene reglas de negocio (no valida fechas pasadas ni choques de agenda).
-  - No tiene acceso a la base de datos (no conoce a Supabase).
-Solo hace dos cosas: MOSTRAR datos y ENVIAR peticiones al servidor por HTTP.
-Todo el trabajo pesado lo hace el servidor. Por eso este cliente puede correr
-en cualquier dispositivo: un portátil, un celular, una tablet.
-=========================================================================== -->
+<!-- Cliente web de la demo: consume la API del servidor por HTTP.
+     No contiene reglas de negocio ni acceso a datos. -->
 <style>
-  /* Estilos mínimos, colores del curso (azul y verde) */
   body { font-family: system-ui, sans-serif; margin: 0; background: #F2F7FD; color: #2E3440; }
   header { background: #0F4C9C; color: white; padding: 16px 24px; }
   header h1 { margin: 0; font-size: 1.3rem; }
@@ -72,46 +63,34 @@ en cualquier dispositivo: un portátil, un celular, una tablet.
 </main>
 
 <script>
-// ---------------------------------------------------------------------------
-// DIRECCIÓN DEL SERVIDOR
-// Si este archivo se sirve desde el propio servidor (lo normal en la demo),
-// una cadena vacía "" significa "el mismo lugar de donde vine".
-// Para demostrar que cliente y servidor son aplicaciones INDEPENDIENTES,
-// puede abrir este archivo directamente desde su computador (doble clic) y
-// poner aquí la URL de Render, por ejemplo:
-//   const SERVIDOR = "https://demo-citas-XXXX.onrender.com";
-// ---------------------------------------------------------------------------
+// Dirección base de la API. Vacía cuando esta página se sirve desde el
+// propio servidor; con la URL completa (p. ej. la de Render) si el archivo
+// se abre de forma independiente.
 const SERVIDOR = "";
 
-// --- Pedir la lista de profesionales al servidor (petición GET por HTTP) ---
 async function cargarProfesionales() {
-  // fetch() abre una conexión de red hacia el servidor y espera su respuesta.
   const respuesta = await fetch(SERVIDOR + "/api/profesionales");
-  const profesionales = await respuesta.json(); // el servidor responde JSON
+  const profesionales = await respuesta.json();
   const select = document.getElementById("profesional");
   select.innerHTML = profesionales
     .map(p => `<option value="${p.id}">${p.nombre} — ${p.especialidad}</option>`)
     .join("");
 }
 
-// --- Pedir la lista de citas al servidor (petición GET por HTTP) -----------
 async function cargarCitas() {
   const respuesta = await fetch(SERVIDOR + "/api/citas");
   const citas = await respuesta.json();
   const tabla = document.getElementById("tabla-citas");
-  // El cliente SOLO pinta lo que el servidor le entregó. No decide nada.
   tabla.innerHTML = citas
     .map(c => `<tr><td>${c.paciente}</td><td>${c.profesional}</td>
                <td>${new Date(c.fecha_hora).toLocaleString("es-CO")}</td></tr>`)
     .join("");
 }
 
-// --- Enviar una nueva cita al servidor (petición POST por HTTP) -------------
 async function crearCita() {
-  // El campo datetime-local NO incluye zona horaria. La convertimos aquí a un
-  // instante universal (formato ISO, en UTC) antes de enviarla: así el
-  // servidor y la base de datos (que corren en OTRA zona horaria, en la nube)
-  // guardan exactamente el momento que la persona eligió en su reloj local.
+  // datetime-local no incluye zona horaria: se convierte a un instante
+  // universal (ISO/UTC) para que el servidor y la base de datos, que corren
+  // en otra zona, guarden el momento elegido en el reloj local del usuario.
   const valorFecha = document.getElementById("fecha").value;
   const datos = {
     paciente: document.getElementById("paciente").value,
@@ -119,8 +98,6 @@ async function crearCita() {
     fecha_hora: valorFecha ? new Date(valorFecha).toISOString() : "",
   };
 
-  // Observen: el cliente NO valida las reglas. Las envía tal cual y el
-  // SERVIDOR decide si acepta o rechaza. Prueben reservar en el pasado.
   const respuesta = await fetch(SERVIDOR + "/api/citas", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -129,24 +106,16 @@ async function crearCita() {
   const resultado = await respuesta.json();
 
   const mensaje = document.getElementById("mensaje");
-if (respuesta.ok) {
-  const prof = document.getElementById("profesional");
-  mensaje.className = "ok";
-  mensaje.innerHTML = `
-    <strong>✓ Cita confirmada</strong> (código ${resultado.id})<br>
-    Paciente: ${datos.paciente}<br>
-    Profesional: ${prof.options[prof.selectedIndex].text}<br>
-    Fecha: ${new Date(datos.fecha_hora).toLocaleString("es-CO")}`;
-  document.getElementById("paciente").value = "";  // limpiar el formulario
-  document.getElementById("fecha").value = "";
-  cargarCitas();
-}else {
+  if (respuesta.ok) {
+    mensaje.className = "ok";
+    mensaje.textContent = "El servidor aceptó la cita (id " + resultado.id + ")";
+    cargarCitas();
+  } else {
     mensaje.className = "error";
     mensaje.textContent = "El servidor la rechazó: " + resultado.error;
   }
 }
 
-// --- Al abrir la página: verificar el servidor y cargar los datos -----------
 (async function iniciar() {
   const estado = document.getElementById("estado-servidor");
   try {
@@ -157,7 +126,6 @@ if (respuesta.ok) {
     await cargarProfesionales();
     await cargarCitas();
   } catch (e) {
-    // Si el servidor está caído, el cliente no sirve para nada ("todo o nada").
     estado.textContent = "No hay conexión con el servidor. Sin él, este cliente no puede hacer nada.";
   }
 })();
