@@ -1,6 +1,6 @@
 <div align="center">
 
-# Reserva de Citas — Demo Cliente-Servidor
+# Reserva de Citas: Demo Cliente-Servidor
 
 Sistema de referencia del curso **Arquitectura de Sistemas I** · Universidad Central · 2026-2
 
