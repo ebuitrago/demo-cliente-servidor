@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>Semana 9. Reglas de dependencia en el sistema de reserva de citas</title>
+<style>
+:root{--paper:#ffffff;--ink:#1c2938;--muted:#526577;--line:#dce4eb;--blue:#23558c;--green:#17795b;--red:#ab4a46;--amber:#a56f27;--soft:#f6f9fb;--mono:#17283a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}a{color:#1d5f98;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#163f6a}
+.top{border-bottom:1px solid var(--line);background:white;position:sticky;top:0;z-index:30}.topin{max-width:1260px;min-height:62px;padding:13px 32px;display:flex;align-items:center;justify-content:space-between;margin:auto;gap:18px}.brand{font-weight:700;letter-spacing:.02em;font-size:.93rem;color:var(--ink)}.course{font-size:.8rem;color:var(--muted)}.layout{max-width:1260px;margin:0 auto;display:grid;grid-template-columns:218px minmax(0,780px);gap:52px;padding:38px 32px 100px;justify-content:center}.menu{position:sticky;top:86px;height:max-content;border-right:1px solid var(--line);padding-right:18px}.menu b{display:block;margin-bottom:15px;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.menu a{display:block;padding:5px 0;font-size:.86rem;color:var(--muted);text-decoration:none}.menu a:hover{color:var(--blue)}main{min-width:0}h1{font-size:clamp(2rem,3.5vw,3.15rem);line-height:1.14;letter-spacing:-.035em;font-weight:740;margin:14px 0 16px;color:#16354e}h2{font-size:1.55rem;line-height:1.24;letter-spacing:-.02em;color:#173b60;margin:56px 0 17px;padding-top:7px}h3{font-size:1.1rem;line-height:1.3;margin:29px 0 9px;color:var(--ink)}h4{font-size:.95rem;margin:19px 0 5px}p{margin:0 0 17px}.lede{font-size:1.12rem;color:#3e5569;max-width:730px}.eyebrow{letter-spacing:.09em;text-transform:uppercase;color:var(--green);font-size:.78rem;font-weight:700}.refline{border-top:1px solid var(--line);margin-top:25px;padding-top:14px;font-size:.83rem;color:var(--muted)}.refline code{font-size:.81em}.rule{border-left:3px solid var(--green);padding:7px 0 7px 16px;margin:21px 0}.warning{border-left-color:var(--amber)}.error{border-left-color:var(--red)}.rule p:last-child{margin-bottom:0}strong{font-weight:650}code,pre{font-family:"Cascadia Code",Consolas,"Liberation Mono",monospace}p code,li code,td code{font-size:.86em;background:#eef3f7;padding:1px 5px;border-radius:3px;color:#204f72}table{border-collapse:collapse;width:100%;margin:20px 0 26px;font-size:.92rem}th{background:var(--soft);font-size:.83rem;color:#34506b;font-weight:700}th,td{border-bottom:1px solid var(--line);text-align:left;vertical-align:top;padding:10px 10px}td:first-child{font-weight:600}.codewrap{border:1px solid var(--line);border-radius:8px;margin:20px 0 24px;overflow:hidden;background:#fbfdfe}.codehead{padding:9px 14px;background:#edf3f7;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;color:#37526a;font-size:.82rem}.codehead button,.ui button{background:white;border:1px solid #b8c9d6;border-radius:5px;color:var(--blue);padding:6px 11px;cursor:pointer;font-size:.84rem;font-family:inherit}.codehead button:hover,.ui button:hover{background:#e6f0f7}.codewrap pre{margin:0;padding:16px 18px;font-size:.79rem;line-height:1.65;overflow-x:auto;color:#213142;tab-size:2}pre code{background:none;white-space:pre}.diagram{margin:21px 0 18px}.diagram svg{width:100%;height:auto;display:block}.caption{font-size:.81rem;color:var(--muted);margin-top:6px}.rowcompare{display:grid;grid-template-columns:1fr 1fr;gap:23px;margin:17px 0}.rowcompare > div{border-top:3px solid var(--line);padding-top:11px}.rowcompare .before{border-color:var(--red)}.rowcompare .after{border-color:var(--green)}ul,ol{padding-left:23px}li{margin-bottom:7px}.tiny{font-size:.84rem;color:var(--muted)}details{border-bottom:1px solid var(--line);padding:11px 0}summary{font-weight:600;color:#214b6b;cursor:pointer}details p{margin:10px 0}.ui{background:#f7fafb;border:1px solid #d9e4ea;border-radius:9px;padding:18px;margin:18px 0}.ui .answer{font-size:.93rem;min-height:24px;margin:12px 0 0}.ui button{margin:6px 6px 6px 0}.ok{color:#136b4c}.bad{color:#a34743}.foot{font-size:.82rem;margin-top:60px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted)}.projection main{font-size:1.13rem}.projection h1{font-size:3.5rem}.projection h2{font-size:1.9rem}.projection .menu{display:none}.projection .layout{grid-template-columns:minmax(0,950px)}.projection .codewrap pre{font-size:.92rem}.actions{display:flex;align-items:center;gap:10px}.hideprint{}@media(max-width:900px){.layout{grid-template-columns:1fr;gap:15px;padding:24px 21px 60px}.menu{position:static;display:flex;flex-wrap:wrap;gap:9px;border-right:0;border-bottom:1px solid var(--line);padding:0 0 16px}.menu b{width:100%;margin:0}.menu a{font-size:.8rem}.topin{padding:11px 20px}.rowcompare{grid-template-columns:1fr}}@media(max-width:600px){.course{display:none}h1{font-size:2rem}.rowcompare{gap:5px}table{font-size:.79rem}.codewrap pre{font-size:.72rem}}@media print{.top,.menu,.hideprint,.codehead button{display:none!important}.layout{display:block;padding:0}.codewrap{break-inside:avoid}h2,h3{break-after:avoid}body{font-size:11pt}}
+
+.codehead{flex-wrap:wrap;min-width:0}
+.codehead code{overflow-wrap:anywhere;word-break:break-word}
+.codehead button{flex-shrink:0}
+p code,li code,td code{overflow-wrap:anywhere;word-break:break-word}
+html,body{overflow-x:clip}
+
+/* Figuras de dependencias: dos vistas legibles también con videobeam. */
+.model-fig{margin:22px 0 30px}
+.model-fig h3{font-size:1.13rem;margin:0 0 5px}
+.model-fig .subfig{font-size:.91rem;color:var(--muted);margin:0 0 10px}
+.model-fig .diagram-scroll{overflow-x:auto;max-width:100%;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0 4px}
+.model-fig svg{width:100%;min-width:650px;height:auto;display:block}
+.model-fig figcaption{font-size:.85rem;color:var(--muted);margin:9px 0 0;line-height:1.55}
+.figure-legend{display:flex;flex-wrap:wrap;gap:12px 22px;margin:12px 0 18px;font-size:.86rem;color:#37566c}
+.figure-legend span{display:inline-flex;gap:8px;align-items:center}
+.linekey{width:33px;height:0;display:inline-block;border-top:2px solid #547c9b;position:relative}
+.linekey:after{content:'';position:absolute;right:0;top:-5px;border-left:6px solid #547c9b;border-top:4px solid transparent;border-bottom:4px solid transparent}
+.linekey.warn{border-top-color:#b35448}.linekey.warn:after{border-left-color:#b35448}
+.linekey.dash{border-top:2px dashed #1b7b62}.linekey.dash:after{border-left-color:#1b7b62}
+.diagram-note{border-left:3px solid #96b6a8;padding:7px 0 7px 15px;margin:15px 0 22px}
+.exercise-table td:first-child{font-weight:500}
+@media(max-width:700px){.model-fig svg{width:780px;min-width:780px}.figure-legend{gap:7px 15px}}
+@media print{.model-fig{break-inside:avoid}.model-fig svg{min-width:0}.diagram-scroll{overflow:visible}}
+
+/* Dependencias UML 2.x: flechas discontinuas y punta abierta. */
+.figure-legend .linekey{width:37px;border-top-style:dashed;border-top-width:2px}
+.figure-legend .linekey:after{content:"";position:absolute;right:-1px;top:-5px;width:8px;height:8px;border:solid currentColor;border-width:1.7px 1.7px 0 0;transform:rotate(45deg);background:transparent}
+.figure-legend .umlblue{border-color:#426c88;color:#426c88}
+.figure-legend .umlred{border-color:#b4514b;color:#b4514b}
+.figure-legend .umlgreen{border-color:#167e69;color:#167e69}
+.uml-steps{padding-left:23px}
+.uml-steps li{margin:0 0 10px}
+@media (max-width:700px){.model-fig svg{width:900px;min-width:900px}}
+
+@media(max-width:760px){.exercise-table{display:block;overflow-x:auto}.exercise-table th,.exercise-table td{min-width:155px}}
+@media print{.exercise-table{font-size:9pt}.diagram{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="top"><div class="topin"><div class="brand">ARQUITECTURA DE SISTEMAS I</div><div class="actions"><span class="course">2026-2 / Semana 9</span><button class="hideprint" onclick="document.body.classList.toggle('projection')" style="background:white;color:#214e76;border:1px solid #becdd7;border-radius:5px;padding:6px 12px;cursor:pointer" type="button">Modo proyección</button></div></div></header>
+<div class="layout">
+<nav aria-label="Secciones" class="menu"><b>Contenido de clase</b>
+<a href="#punto">1. Punto de partida</a><a href="#estado">2. Qué existe hoy</a><a href="#dependencias">3. Dependencias reales</a><a href="#dip">4. DIP y DI</a><a href="#refactor">5. Inversión de dependencias</a><a href="#pruebas">6. Pruebas aisladas</a><a href="#limites">7. Límites y riesgos</a><a href="#taller">8. Taller del equipo</a>
+</nav><main>
+<p class="eyebrow">Laboratorio guiado con Node.js y Express</p>
+<h1>Reglas de dependencia en la aplicación de reserva de citas</h1>
+<p class="lede">La aplicación ya pasó de cliente-servidor a n-capas. El trabajo de esta semana es identificar las dependencias que permanecen rígidas y reducirlas sin cambiar las rutas HTTP, el cliente ni el esquema de datos.</p>
+<section id="punto"><h2>1. De cliente-servidor a reglas de dependencia</h2>
+<div class="diagram"><svg aria-label="Progresión del curso" role="img" viewbox="0 0 780 162"><defs><marker id="a" markerheight="6" markerwidth="6" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#7e93a6" stroke-width="1.5"></path></marker></defs><rect fill="#f5f8fa" height="95" rx="8" stroke="#d5dfe6" width="222" x="12" y="22"></rect><rect fill="#f5f8fa" height="95" rx="8" stroke="#d5dfe6" width="222" x="279" y="22"></rect><rect fill="#f0f7f3" height="95" rx="8" stroke="#8dbca4" width="222" x="546" y="22"></rect><g fill="#183a54" font-family="Segoe UI,Arial" font-size="17" font-weight="700"><text x="26" y="52">Semana 7</text><text x="293" y="52">Semana 8</text><text x="560" y="52">Semana 9</text></g><g fill="#43596d" font-family="Segoe UI,Arial" font-size="13"><text x="26" y="79">Cliente-servidor</text><text x="26" y="98">server.js concentrado</text><text x="293" y="79">Cuatro capas en src/</text><text x="293" y="98">Responsabilidades separadas</text><text x="560" y="79">DIP y DI</text><text x="560" y="98">Dependencias desacopladas</text></g><path d="M239 69 H268 M506 69 H536" marker-end="url(#a)" stroke="#8197aa" stroke-width="1.7"></path></svg></div>
+<p>El repositorio actual conserva la arquitectura cliente-servidor: <code>public/index.html</code> se comunica por HTTP con Express y el servidor consulta PostgreSQL en Supabase. El refactor en capas cambió la organización interna, sin modificar esos límites de red.</p>
+<div class="rule">Pregunta central: si mañana reemplazamos PostgreSQL por un repositorio simulado para hacer pruebas, ¿cuántos archivos de negocio habría que cambiar?</div>
+<p>Con el código actual, tendríamos que intervenir un archivo de aplicación: <code>src/aplicacion/citaService.js</code>. Este servicio importa directamente <code>citaRepository.js</code> y <code>profesionalRepository.js</code>, que utilizan PostgreSQL. Para sustituirlos manualmente por repositorios simulados habría que cambiar esas referencias. Las reglas puras de <code>reglasDeAgenda.js</code> no necesitan modificaciones.</p>
+<p>Después de aplicar DIP e inyección de dependencias, la respuesta sería: cero archivos de negocio. <code>citaService.js</code> recibiría los repositorios por parámetros y utilizaría sus operaciones (<code>listarTodas</code>, <code>existeEnHorario</code>, <code>guardar</code> y <code>listarTodos</code>) sin conocer si los datos vienen de PostgreSQL o de memoria.</p>
+<div class="codewrap"><div class="codehead">Esquema simplificado: prueba sin PostgreSQL (ejemplo completo en el punto 6)</div><pre><code>// Los repositorios simulados se preparan en el archivo de pruebas.
+const servicio = crearCitaService({
+  citaRepository: repositorioCitasEnMemoria,
+  profesionalRepository: profesionalesEnMemoria
+});
+
+// El servicio ejecuta las mismas reglas de negocio.
+await servicio.reservarCita(datosDePrueba);</code></pre></div>
+<p>¿Qué sí habría que cambiar? Preparar los repositorios simulados y entregarlos al servicio desde la prueba. Si el cambio fuera para toda la aplicación en ejecución, se ajustaría el ensamblaje en <code>server.js</code> y, cuando corresponda, el adaptador de persistencia; no la lógica de aplicación ni las reglas del dominio.</p>
+<p>Buscamos que cambiar la tecnología de persistencia no obligue a modificar la lógica de negocio. «Cero» se refiere a los archivos de aplicación y dominio, no a todos los archivos del proyecto. Ambas implementaciones deben respetar el mismo contrato y comportamiento esperado.</p></section>
+<section id="estado"><h2>2. La estructura actual del repositorio</h2>
+<div class="codewrap"><div class="codehead">Estructura del proyecto</div><pre><code>server.js                         # Configuración Express, rutas y arranque
+src/
+  presentacion/citasRoutes.js     # HTTP y respuestas 201, 400, 409, 500
+  aplicacion/citaService.js      # Caso de uso y secuencia de operaciones
+  dominio/reglasDeAgenda.js      # Validaciones, ErrorDeNegocio
+  persistencia/
+    db.js                        # Pool pg y DATABASE_URL
+    citaRepository.js            # listarTodas, existeEnHorario, guardar
+    profesionalRepository.js     # listarTodos
+public/index.html                # Cliente web existente
+db/setup.sql                     # Tablas profesionales y citas
+docs/REFACTOR.md                 # Justificación del paso a n-capas</code></pre></div>
+<p>Esta estructura está documentada en el propio repositorio, incluido <a href="https://github.com/ebuitrago/demo-cliente-servidor/blob/main/docs/REFACTOR.md" rel="noopener" target="_blank">docs/REFACTOR.md</a>. El dominio ya es independiente de Express y de PostgreSQL. Las consultas SQL están dentro de persistencia. Eso es un avance real que debemos conservar.</p>
+<table><thead><tr><th>Archivo real</th><th>Lo que ya hace correctamente</th></tr></thead><tbody><tr><td><code>reglasDeAgenda.js</code></td><td>Valida datos, fecha futura y disponibilidad sin importar paquetes tecnológicos.</td></tr><tr><td><code>citaService.js</code></td><td>Orquesta validar, consultar conflicto y guardar.</td></tr><tr><td><code>citaRepository.js</code></td><td>Concentra SQL de citas y usa parámetros <code>$1</code>, <code>$2</code>, <code>$3</code>.</td></tr><tr><td><code>citasRoutes.js</code></td><td>Convierte errores de negocio en códigos HTTP.</td></tr></tbody></table>
+</section>
+<section id="dependencias"><h2>3. La dependencia que falta resolver</h2>
+<p>Observe las importaciones reales de <a href="https://github.com/ebuitrago/demo-cliente-servidor/blob/main/src/aplicacion/citaService.js" rel="noopener" target="_blank">src/aplicacion/citaService.js</a>:</p>
+<div class="codewrap"><div class="codehead">ACTUAL, extraído del repositorio <button class="copy" type="button">Copiar</button></div><pre><code>// src/aplicacion/citaService.js (repositorio real)
+const reglas = require('../dominio/reglasDeAgenda');
+const citaRepository = require('../persistencia/citaRepository');
+const profesionalRepository = require('../persistencia/profesionalRepository');
+
+async function reservarCita(datos) {
+  reglas.validarDatosCompletos(datos);
+  reglas.validarFechaFutura(datos.fecha_hora);
+  const ocupado = await citaRepository.existeEnHorario(
+    datos.profesional_id, datos.fecha_hora
+  );
+  reglas.validarAgendaLibre(ocupado);
+  const id = await citaRepository.guardar(datos);
+  return { mensaje: 'Cita creada', id };
+}</code></pre></div>
+<p>La lógica del caso de uso conoce los módulos concretos <code>citaRepository</code> y <code>profesionalRepository</code>. Separar archivos no elimina ese acoplamiento.</p>
+<div class="worked-example" id="ejemplo-diagrama">
+<h3>Ejemplo resuelto con notación UML 2.x</h3>
+<p>Usaremos un diagrama de dependencias entre artefactos. Cada rectángulo representa un módulo de código de la aplicación, identificado con <code>«artifact»</code>. La relación UML se dibuja con línea discontinua y punta abierta, desde el cliente (módulo dependiente) hacia el proveedor (módulo utilizado). El estereotipo o palabra clave <code>«use»</code> indica una dependencia de uso.</p>
+<div aria-label="Leyenda UML" class="figure-legend">
+<span><i class="linekey umlblue"></i>Dependencia de uso existente</span>
+<span><i class="linekey umlred"></i>Dependencia hacia un adaptador concreto</span>
+<span><i class="linekey umlgreen"></i>Uso del servicio recibido por DI</span>
+</div>
+<figure class="model-fig">
+<h3>Diagrama A. Estado actual del repositorio</h3>
+<p class="subfig">Estructura n-capas de la demostración de reserva de citas.</p>
+<div class="diagram-scroll"><svg aria-label="Diagrama A. Dependencias UML 2.x del proyecto actual" role="img" viewbox="0 0 900 535" xmlns="http://www.w3.org/2000/svg">
+<title>Diagrama A. Dependencias UML 2.x del proyecto actual</title><desc>Las flechas discontinuas apuntan del artefacto que utiliza a su proveedor. El servicio depende directamente de dos repositorios concretos de persistencia. La ruta importa un tipo de error del dominio.</desc>
+<defs><marker id="arrow-blue" markerheight="11" markerunits="userSpaceOnUse" markerwidth="11" orient="auto" refx="10" refy="5"><path d="M2,1 L10,5 L2,9" fill="none" stroke="#426c88" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"></path></marker><marker id="arrow-red" markerheight="11" markerunits="userSpaceOnUse" markerwidth="11" orient="auto" refx="10" refy="5"><path d="M2,1 L10,5 L2,9" fill="none" stroke="#b4514b" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"></path></marker><marker id="arrow-green" markerheight="11" markerunits="userSpaceOnUse" markerwidth="11" orient="auto" refx="10" refy="5"><path d="M2,1 L10,5 L2,9" fill="none" stroke="#167e69" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"></path></marker></defs>
+<g font-family="Segoe UI,Arial,sans-serif"><path d="M 137 111 V 215" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><path d="M 242 251 H 316" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#426c88" font-size="12.2" font-weight="650" text-anchor="middle" x="281" y="238">«use»</text><path d="M 114 285 V 475 H 316" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#426c88" font-size="12.2" font-weight="650" text-anchor="middle" x="198" y="463">«use»</text><path d="M 426 285 V 431" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#426c88" font-size="12.2" font-weight="650" text-anchor="middle" x="448" y="372">«use»</text><path d="M 541 240 H 582 V 201 H 625" fill="none" marker-end="url(#arrow-red)" stroke="#b4514b" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#b4514b" font-size="12.2" font-weight="650" text-anchor="middle" x="595" y="182">«use»</text><path d="M 541 260 H 582 V 334 H 625" fill="none" marker-end="url(#arrow-red)" stroke="#b4514b" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#b4514b" font-size="12.2" font-weight="650" text-anchor="middle" x="596" y="319">«use»</text><path d="M 859 205 H 882 V 474 H 859" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><path d="M 859 335 H 873 V 488 H 859" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><g class="uml-artifact">
+<rect fill="#f8fafc" height="66" rx="3" stroke="#c0cfda" stroke-width="1.4" width="210" x="32" y="45"></rect>
+<path d="M 218 45 V 61 H 234" fill="none" stroke="#c0cfda" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="44" y="63">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="44" y="86">server.js</text>
+<text fill="#556f81" font-size="12.5" x="44" y="102">Arranque y configuración</text>
+</g><g class="uml-artifact">
+<rect fill="#f8fafc" height="70" rx="3" stroke="#c0cfda" stroke-width="1.4" width="210" x="32" y="215"></rect>
+<path d="M 218 215 V 231 H 234" fill="none" stroke="#c0cfda" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="44" y="233">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="44" y="256">citasRoutes.js</text>
+<text fill="#556f81" font-size="12.5" x="44" y="272">Presentación y HTTP</text>
+</g><g class="uml-artifact">
+<rect fill="#eff6fc" height="70" rx="3" stroke="#9abbd3" stroke-width="1.4" width="225" x="316" y="215"></rect>
+<path d="M 517 215 V 231 H 533" fill="none" stroke="#9abbd3" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="328" y="233">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="328" y="256">citaService.js</text>
+<text fill="#556f81" font-size="12.5" x="328" y="272">Aplicación</text>
+</g><g class="uml-artifact">
+<rect fill="#f0f8f4" height="70" rx="3" stroke="#a6c9b7" stroke-width="1.4" width="225" x="316" y="431"></rect>
+<path d="M 517 431 V 447 H 533" fill="none" stroke="#a6c9b7" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="328" y="449">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="328" y="472">reglasDeAgenda.js</text>
+<text fill="#556f81" font-size="12.5" x="328" y="488">Dominio puro</text>
+</g><g class="uml-artifact">
+<rect fill="#fff4f2" height="70" rx="3" stroke="#d4a19a" stroke-width="1.4" width="234" x="625" y="167"></rect>
+<path d="M 835 167 V 183 H 851" fill="none" stroke="#d4a19a" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="637" y="185">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="637" y="208">citaRepository.js</text>
+<text fill="#556f81" font-size="12.5" x="637" y="224">SQL de citas</text>
+</g><g class="uml-artifact">
+<rect fill="#fff4f2" height="70" rx="3" stroke="#d4a19a" stroke-width="1.4" width="234" x="625" y="301"></rect>
+<path d="M 835 301 V 317 H 851" fill="none" stroke="#d4a19a" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="637" y="319">«artifact»</text>
+<text fill="#1a3950" font-size="14.9" font-weight="700" x="637" y="342">profesionalRepository.js</text>
+<text fill="#556f81" font-size="12.5" x="637" y="358">SQL de profesionales</text>
+</g><g class="uml-artifact">
+<rect fill="#f5f8fa" height="70" rx="3" stroke="#b1c8d2" stroke-width="1.4" width="234" x="625" y="445"></rect>
+<path d="M 835 445 V 461 H 851" fill="none" stroke="#b1c8d2" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="637" y="463">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="637" y="486">db.js</text>
+<text fill="#556f81" font-size="12.5" x="637" y="502">Pool de PostgreSQL</text>
+</g></g>
+</svg></div>
+<figcaption>Las flechas rojas muestran el problema que se trabajará en esta sesión: <code>citaService.js</code> depende de <code>citaRepository.js</code> y <code>profesionalRepository.js</code>. Ambos son módulos concretos. Las demás dependencias representadas pueden mantenerse en este diseño. Para simplificar la figura, no se dibuja la biblioteca externa <code>pg</code>; <code>db.js</code> sí la importa.</figcaption>
+</figure>
+<figure class="model-fig">
+<h3>Diagrama B. Diseño propuesto con DIP y DI</h3>
+<p class="subfig">Las dependencias concretas se trasladan al punto de composición y se utiliza un contrato propio de aplicación.</p>
+<div class="diagram-scroll"><svg aria-label="Diagrama B. Dependencias UML 2.x tras aplicar DIP y DI" role="img" viewbox="0 0 900 645" xmlns="http://www.w3.org/2000/svg">
+<title>Diagrama B. Dependencias UML 2.x tras aplicar DIP y DI</title><desc>El punto de entrada importa y ensambla las implementaciones. El servicio de aplicación utiliza los métodos especificados por un contrato propio y las reglas de dominio, pero no importa el repositorio PostgreSQL. Las rutas usan el servicio recibido por inyección.</desc>
+<defs><marker id="arrow-blue" markerheight="11" markerunits="userSpaceOnUse" markerwidth="11" orient="auto" refx="10" refy="5"><path d="M2,1 L10,5 L2,9" fill="none" stroke="#426c88" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"></path></marker><marker id="arrow-red" markerheight="11" markerunits="userSpaceOnUse" markerwidth="11" orient="auto" refx="10" refy="5"><path d="M2,1 L10,5 L2,9" fill="none" stroke="#b4514b" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"></path></marker><marker id="arrow-green" markerheight="11" markerunits="userSpaceOnUse" markerwidth="11" orient="auto" refx="10" refy="5"><path d="M2,1 L10,5 L2,9" fill="none" stroke="#167e69" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"></path></marker></defs>
+<g font-family="Segoe UI,Arial,sans-serif"><path d="M 130 116 V 230" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><path d="M 240 74 H 424 V 230" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><path d="M 240 99 H 590 V 482 H 622" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><path d="M 240 262 H 316" fill="none" marker-end="url(#arrow-green)" stroke="#167e69" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#167e69" font-size="12.2" font-weight="650" text-anchor="middle" x="276" y="248">«use»</text><path d="M 541 263 H 622" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#426c88" font-size="12.2" font-weight="650" text-anchor="middle" x="580" y="247">«use»</text><path d="M 427 300 V 447" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><text fill="#426c88" font-size="12.2" font-weight="650" text-anchor="middle" x="451" y="375">«use»</text><path d="M 105 300 V 486 H 316" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><path d="M 746 517 V 553" fill="none" marker-end="url(#arrow-blue)" stroke="#426c88" stroke-dasharray="7 5" stroke-width="2"></path><g class="uml-artifact">
+<rect fill="#eff6fc" height="70" rx="3" stroke="#9abbd3" stroke-width="1.4" width="208" x="32" y="46"></rect>
+<path d="M 216 46 V 62 H 232" fill="none" stroke="#9abbd3" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="44" y="64">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="44" y="87">server.js</text>
+<text fill="#556f81" font-size="12.5" x="44" y="103">Ensamblaje e inyección</text>
+</g><g class="uml-artifact">
+<rect fill="#f8fafc" height="70" rx="3" stroke="#c0cfda" stroke-width="1.4" width="208" x="32" y="230"></rect>
+<path d="M 216 230 V 246 H 232" fill="none" stroke="#c0cfda" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="44" y="248">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="44" y="271">citasRoutes.js</text>
+<text fill="#556f81" font-size="12.5" x="44" y="287">Recibe el servicio</text>
+</g><g class="uml-artifact">
+<rect fill="#eff6fc" height="70" rx="3" stroke="#9abbd3" stroke-width="1.4" width="225" x="316" y="230"></rect>
+<path d="M 517 230 V 246 H 533" fill="none" stroke="#9abbd3" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="328" y="248">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="328" y="271">citaService.js</text>
+<text fill="#556f81" font-size="12.5" x="328" y="287">Recibe repositorios</text>
+</g><g class="uml-artifact">
+<rect fill="#f0f8f4" height="70" rx="3" stroke="#a6c9b7" stroke-width="1.4" width="225" x="316" y="447"></rect>
+<path d="M 517 447 V 463 H 533" fill="none" stroke="#a6c9b7" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="328" y="465">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="328" y="488">reglasDeAgenda.js</text>
+<text fill="#556f81" font-size="12.5" x="328" y="504">Dominio puro</text>
+</g><g class="uml-artifact">
+<rect fill="#edf8f3" height="70" rx="3" stroke="#83b9a4" stroke-width="1.4" width="247" x="622" y="230"></rect>
+<path d="M 845 230 V 246 H 861" fill="none" stroke="#83b9a4" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="634" y="248">«artifact»</text>
+<text fill="#1a3950" font-size="14.4" font-weight="700" x="634" y="271">contratos/repositorios.js</text>
+<text fill="#556f81" font-size="12.5" x="634" y="287">Métodos esperados</text>
+</g><g class="uml-artifact">
+<rect fill="#f5f8fa" height="70" rx="3" stroke="#b1c8d2" stroke-width="1.4" width="247" x="622" y="447"></rect>
+<path d="M 845 447 V 463 H 861" fill="none" stroke="#b1c8d2" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="634" y="465">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="634" y="488">citaRepository.js</text>
+<text fill="#556f81" font-size="12.5" x="634" y="504">Adaptador PostgreSQL</text>
+</g><g class="uml-artifact">
+<rect fill="#f5f8fa" height="70" rx="3" stroke="#b1c8d2" stroke-width="1.4" width="247" x="622" y="553"></rect>
+<path d="M 845 553 V 569 H 861" fill="none" stroke="#b1c8d2" stroke-width="1.4"></path>
+<text fill="#60798b" font-size="12.2" x="634" y="571">«artifact»</text>
+<text fill="#1a3950" font-size="16" font-weight="700" x="634" y="594">db.js</text>
+<text fill="#556f81" font-size="12.5" x="634" y="610">Pool de PostgreSQL</text>
+</g></g>
+</svg></div>
+<figcaption>En esta propuesta, <code>server.js</code> conoce los adaptadores e inyecta objetos al servicio y a las rutas. <code>citaService.js</code> importa las reglas y el módulo de comprobación del contrato, no importa el repositorio PostgreSQL. La flecha verde <code>citasRoutes.js</code> hacia <code>citaService.js</code> expresa una dependencia de uso de un servicio recibido como parámetro, no una importación <code>require()</code>. Para conservar la legibilidad, no se incluye <code>profesionalRepository.js</code> en esta vista propuesta ni se repite la dependencia de las rutas con <code>ErrorDeNegocio</code>; ambos se mantienen según el código explicado más adelante.</figcaption>
+</figure>
+<div class="diagram-note">Precisión UML y JavaScript: <code>«use»</code> no es sinónimo de <code>require()</code>: UML expresa que un elemento necesita o utiliza otro, aunque la referencia se reciba por parámetros. Por otra parte, el contrato de JavaScript se verifica por la presencia de métodos; como el adaptador no declara formalmente <code>implements</code>, no se dibuja una flecha de realización de interfaz que el código no tenga.</div>
+<h3>Cómo elaborar el diagrama del equipo</h3>
+<ol class="uml-steps">
+<li>Identificar los módulos reales: comenzar por <code>server.js</code>, presentación, aplicación, dominio y persistencia dentro de su propio repositorio.</li>
+<li>Examinar <code>require()</code>: si el módulo A importa B, dibujar una dependencia UML con la punta hacia B.</li>
+<li>Detectar el acoplamiento: resaltar las dependencias desde aplicación hacia repositorios concretos, no todas las relaciones hacia otros módulos.</li>
+<li>Proponer la inversión: quitar las importaciones concretas del servicio, definir las operaciones esperadas y mostrar dónde <code>server.js</code> ensambla las dependencias.</li>
+<li>Justificar las relaciones: escribir junto al diagrama qué importación, uso o inyección respalda cada flecha, incluida cualquier diferencia respecto al repositorio de referencia.</li>
+</ol>
+<p class="tiny">Para este ejercicio basta con el tipo UML <em>Dependency</em> y, donde agregue claridad, la palabra clave <code>«use»</code>. No corresponde poner <code>«create»</code> en la relación servicio–repositorio, porque el servicio propuesto no crea ese objeto; lo recibe. <code>«call»</code> se refiere a invocaciones específicas y no aporta claridad a este diagrama de módulos. <code>«permit»</code> es ajeno a las relaciones que estamos analizando. Referencia de notación: <a href="https://www.omg.org/spec/UML/2.5.1" rel="noopener" target="_blank">OMG, UML 2.5.1</a>, sección de dependencias.</p>
+</div>
+<div class="rule warning">Precisión de JavaScript: un objeto que exporta métodos constituye una API, pero eso no implica por sí solo inversión de dependencias. Para aplicar DIP, la aplicación debe dejar de importar la implementación concreta y trabajar contra las operaciones que necesita.</div>
+<table><thead><tr><th>Relación</th><th>Decisión para este diseño</th></tr></thead><tbody><tr><td>Presentación a aplicación</td><td>Permitida: invoca un caso de uso.</td></tr><tr><td>Aplicación a dominio</td><td>Permitida: utiliza reglas puras.</td></tr><tr><td>Aplicación a repositorios concretos</td><td>Se elimina: reemplazar por repositorios inyectados.</td></tr><tr><td>Aplicación a contrato propio</td><td>Permitida: comprueba operaciones esperadas.</td></tr><tr><td>Persistencia a <code>pg</code></td><td>Permitida: los detalles SQL viven en el adaptador.</td></tr><tr><td>Dominio a Express o PostgreSQL</td><td>Prohibida: el dominio permanece independiente.</td></tr><tr><td><code>server.js</code> a adaptadores concretos</td><td>Permitida: actúa como punto de composición.</td></tr></tbody></table>
+</section>
+<section id="dip"><h2>4. DIP e DI: dos decisiones distintas</h2>
+<div class="rowcompare"><div class="before"><h3>DIP: principio</h3><p>La aplicación no debe depender de implementaciones concretas de acceso a datos. Define las operaciones que necesita y recibe algo que las cumple.</p></div><div class="after"><h3>DI: mecanismo</h3><p>Un módulo externo construye o selecciona el repositorio y lo entrega al caso de uso. En esta demo basta una función factoría; no se necesita contenedor IoC.</p></div></div>
+<p>El repositorio ya tiene una buena separación de responsabilidades. Para completar este paso se puede aprovechar que <code>citaRepository.js</code> exporta <code>listarTodas()</code>, <code>existeEnHorario()</code> y <code>guardar()</code>. Conservaremos esos nombres y las consultas SQL.</p>
+</section>
+<section id="refactor"><h2>5. Refactorización propuesta sobre archivos existentes</h2>
+<p>Estos cambios son una propuesta docente. No están publicados en el repositorio. Se puede trabajar sobre una copia o una rama nueva, sin alterar el servicio utilizado por los estudiantes.</p>
+<h3>Paso 1. Explicitar el contrato de repositorios</h3>
+<p>En JavaScript no existe una interfaz nativa como en Java o TypeScript. Aquí se emplea un contrato estructural con comprobación básica de métodos. Esto no garantiza toda la semántica del repositorio, pero sí detecta implementaciones incompletas al ensamblar.</p>
+<div class="codewrap"><div class="codehead">PROPUESTA: archivo nuevo <code>src/aplicacion/contratos/repositorios.js</code><button class="copy" type="button">Copiar</button></div><pre><code>// NUEVO: src/aplicacion/contratos/repositorios.js
+// Contrato de colaboración de la aplicación (JavaScript).
+function exigirMetodos(objeto, metodos, nombre) {
+  for (const metodo of metodos) {
+    if (typeof objeto?.[metodo] !== 'function') {
+      throw new TypeError(`${nombre} debe implementar ${metodo}()`);
+    }
+  }
+}
+
+function verificarRepositorios({ citaRepository, profesionalRepository }) {
+  exigirMetodos(citaRepository,
+    ['listarTodas', 'existeEnHorario', 'guardar'], 'citaRepository');
+  exigirMetodos(profesionalRepository,
+    ['listarTodos'], 'profesionalRepository');
+}
+
+module.exports = { verificarRepositorios };</code></pre></div>
+<h3>Paso 2. Inyectar los repositorios al servicio</h3>
+<p>La lógica y el comportamiento de las reglas se mantienen. Lo que desaparece son los <code>require('../persistencia/...')</code> dentro de aplicación.</p>
+<div class="codewrap"><div class="codehead">PROPUESTA: sustituye <code>src/aplicacion/citaService.js</code><button class="copy" type="button">Copiar</button></div><pre><code>// MODIFICAR: src/aplicacion/citaService.js
+const reglas = require('../dominio/reglasDeAgenda');
+const { verificarRepositorios } = require('./contratos/repositorios');
+
+function crearCitaService({ citaRepository, profesionalRepository,
+                            reloj = () =&gt; new Date() }) {
+  verificarRepositorios({ citaRepository, profesionalRepository });
+  return {
+    consultarCitas: () =&gt; citaRepository.listarTodas(),
+    consultarProfesionales: () =&gt; profesionalRepository.listarTodos(),
+    reservarCita: async (datos) =&gt; {
+      reglas.validarDatosCompletos(datos);
+      reglas.validarFechaFutura(datos.fecha_hora, reloj());
+      const ocupado = await citaRepository.existeEnHorario(
+        datos.profesional_id, datos.fecha_hora
+      );
+      reglas.validarAgendaLibre(ocupado);
+      const id = await citaRepository.guardar(datos);
+      return { mensaje: 'Cita creada', id };
+    }
+  };
+}
+
+module.exports = { crearCitaService };</code></pre></div>
+<h3>Paso 3. Convertir las rutas en una factoría</h3>
+<p>Actualmente las rutas Express importan el servicio concreto. Para llevar la inyección hasta el borde HTTP, <code>crearCitasRoutes</code> recibirá el servicio ya construido. Mantendrá <code>/api/salud</code>, <code>/api/profesionales</code>, <code>/api/citas</code> y las respuestas del repositorio real.</p>
+<details><summary>Ver el archivo propuesto de rutas (código completo)</summary><div class="codewrap"><div class="codehead">PROPUESTA: sustituye <code>src/presentacion/citasRoutes.js</code><button class="copy" type="button">Copiar</button></div><pre><code>// MODIFICAR: src/presentacion/citasRoutes.js
+const express = require('express');
+const { ErrorDeNegocio } = require('../dominio/reglasDeAgenda');
+
+function crearCitasRoutes({ citaService }) {
+  const router = express.Router();
+  const CODIGO_HTTP = {
+    DATOS_FALTANTES: 400, FECHA_INVALIDA: 400,
+    FECHA_PASADA: 400, AGENDA_OCUPADA: 409
+  };
+  router.get('/salud', (req, res) =&gt;
+    res.json({ estado: 'ok', servidor: 'activo',
+               hora: new Date().toISOString() }));
+  router.get('/citas', async (req, res) =&gt; {
+    try { res.json(await citaService.consultarCitas()); }
+    catch (e) { console.error(e); res.status(500).json({
+      error: 'No se pudo consultar la base de datos' }); }
+  });
+  router.get('/profesionales', async (req, res) =&gt; {
+    try { res.json(await citaService.consultarProfesionales()); }
+    catch (e) { console.error(e); res.status(500).json({
+      error: 'No se pudo consultar la base de datos' }); }
+  });
+  router.post('/citas', async (req, res) =&gt; {
+    try {
+      const resultado = await citaService.reservarCita(req.body);
+      res.status(201).json(resultado);
+    } catch (e) {
+      if (e instanceof ErrorDeNegocio) {
+        res.status(CODIGO_HTTP[e.codigo] || 400).json({ error: e.message });
+      } else {
+        console.error(e);
+        res.status(500).json({ error: 'No se pudo guardar en la base de datos' });
+      }
+    }
+  });
+  return router;
+}
+module.exports = { crearCitasRoutes };</code></pre></div></details>
+<h3>Paso 4. Ensamblar las piezas desde <code>server.js</code></h3>
+<p>El archivo de entrada puede conocer las implementaciones: su responsabilidad es seleccionarlas y conectarlas. La dependencia concreta queda allí, fuera de aplicación y dominio.</p>
+<div class="codewrap"><div class="codehead">PROPUESTA: <code>server.js</code> como punto de composición<button class="copy" type="button">Copiar</button></div><pre><code>// MODIFICAR: server.js, punto de composición
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const { crearCitasRoutes } = require('./src/presentacion/citasRoutes');
+const { crearCitaService } = require('./src/aplicacion/citaService');
+const citaRepository = require('./src/persistencia/citaRepository');
+const profesionalRepository = require('./src/persistencia/profesionalRepository');
+
+const citaService = crearCitaService({
+  citaRepository, profesionalRepository
+});
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api', crearCitasRoutes({ citaService }));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; console.log(`Servidor escuchando en el puerto ${PORT}`));</code></pre></div>
+<div class="rule">Archivos que no requieren modificación para aplicar este refactor: <code>src/dominio/reglasDeAgenda.js</code>, <code>src/persistencia/citaRepository.js</code>, <code>src/persistencia/profesionalRepository.js</code>, <code>src/persistencia/db.js</code>, <code>public/index.html</code> y <code>db/setup.sql</code>. El repositorio de PostgreSQL cumple estructuralmente el contrato con sus métodos existentes.</div>
+</section>
+<section id="pruebas"><h2>6. Verificar el caso de uso sin Supabase</h2><p class="tiny">El archivo que aparece a continuación contiene tres pruebas de referencia. El punto 8 exige que cada equipo añada una cuarta prueba distinta.</p>
+<p>Al quitar las importaciones directas de persistencia, el caso de uso se puede ejecutar con un objeto en memoria. No hay que iniciar Express ni conectar una base de datos. El archivo siguiente utiliza el módulo de pruebas incorporado en Node.js.</p>
+<details open=""><summary>Pruebas para una reserva válida, una agenda ocupada y una fecha pasada</summary><div class="codewrap"><div class="codehead">PROPUESTA: nuevo archivo <code>test/citaService.test.js</code><button class="copy" type="button">Copiar</button></div><pre><code>// NUEVO: test/citaService.test.js (Node.js &gt;= 18)
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { crearCitaService } = require('../src/aplicacion/citaService');
+
+function crearServicioParaPrueba(ocupado = false) {
+  let guardadas = 0;
+  const servicio = crearCitaService({
+    citaRepository: {
+      listarTodas: async () =&gt; [],
+      existeEnHorario: async () =&gt; ocupado,
+      guardar: async () =&gt; { guardadas++; return 7; }
+    },
+    profesionalRepository: { listarTodos: async () =&gt; [] },
+    reloj: () =&gt; new Date('2026-10-01T00:00:00Z')
+  });
+  return { servicio, guardadas: () =&gt; guardadas };
+}
+
+test('reserva permitida', async () =&gt; {
+  const x = crearServicioParaPrueba();
+  const respuesta = await x.servicio.reservarCita({
+    paciente: 'Ana', profesional_id: 1,
+    fecha_hora: '2026-11-15T10:00:00Z'
+  });
+  assert.equal(respuesta.id, 7);
+  assert.equal(x.guardadas(), 1);
+});
+
+test('agenda ocupada no genera escritura', async () =&gt; {
+  const x = crearServicioParaPrueba(true);
+  await assert.rejects(() =&gt; x.servicio.reservarCita({
+    paciente: 'Ana', profesional_id: 1,
+    fecha_hora: '2026-11-15T10:00:00Z'
+  }), { codigo: 'AGENDA_OCUPADA' });
+  assert.equal(x.guardadas(), 0);
+});
+
+test('fecha pasada se rechaza sin consultar PostgreSQL', async () =&gt; {
+  const x = crearServicioParaPrueba();
+  await assert.rejects(() =&gt; x.servicio.reservarCita({
+    paciente: 'Ana', profesional_id: 1,
+    fecha_hora: '2026-09-01T10:00:00Z'
+  }), { codigo: 'FECHA_PASADA' });
+  assert.equal(x.guardadas(), 0);
+});</code></pre></div></details>
+<h3>Ejecutar las pruebas unitarias</h3>
+<p>Las pruebas usan un reloj controlado y repositorios en memoria. No necesitan Express, <code>DATABASE_URL</code> ni conexión a Supabase. Deben aprobarse los tres casos suministrados antes de avanzar a la integración HTTP.</p><div class="codewrap"><div class="codehead">Comando válido en PowerShell, CMD, Git Bash, Linux y macOS<button class="copy" type="button">Copiar</button></div><pre><code>node --test test/citaService.test.js</code></pre></div><h3>Comprobar que aplicación no importe adaptadores concretos</h3>
+<p>Después de aplicar la refactorización, busque referencias a la carpeta de persistencia dentro de <code>src/aplicacion/</code>. En ambos sistemas el resultado esperado es que no aparezcan coincidencias. El servicio sí puede importar las reglas del dominio y su contrato.</p><div class="codewrap"><div class="codehead">Terminal Linux, macOS o Git Bash<button class="copy" type="button">Copiar</button></div><pre><code>grep -R "persistencia/" src/aplicacion</code></pre></div><div class="codewrap"><div class="codehead">Windows PowerShell<button class="copy" type="button">Copiar</button></div><pre><code>Get-ChildItem -Path .\src\aplicacion -Filter *.js -Recurse |
+  Select-String -Pattern 'persistencia/'</code></pre></div><p class="tiny">Que no aparezca texto en esta búsqueda no demuestra por sí solo DIP. Compruebe también que los repositorios se reciben como parámetros y que el ensamblaje ocurre en <code>server.js</code>.</p>
+<div class="ui hideprint" id="quiz">Comprueba tu comprensión<p>Si <code>citaService.js</code> requiere directamente <code>citaRepository.js</code>, ¿qué describe mejor el problema?</p><button data-quiz="0">Las capas están en carpetas diferentes, por tanto no existe acoplamiento.</button><button data-quiz="1">La aplicación sigue conociendo el adaptador concreto de persistencia.</button><button data-quiz="2">El navegador se conecta directamente a Supabase.</button><p aria-live="polite" class="answer" role="status"></p></div>
+</section>
+<section id="limites"><h2>7. Lo que DIP y DI no solucionan</h2>
+<h3>Concurrencia en la agenda</h3><p>La versión actual consulta <code>existeEnHorario()</code> y, si no hay conflicto, ejecuta <code>guardar()</code>. Dos peticiones simultáneas pueden encontrar el mismo horario libre y guardar dos citas: es una condición de carrera.</p>
+<p>Separar capas e inyectar un repositorio no resuelve esa exclusión. Una solución posterior es establecer una restricción única sobre profesional y fecha-hora, y traducir el error de duplicado a la respuesta HTTP correspondiente.</p>
+<details><summary>Ejemplo SQL para una mejora futura (no ejecutar durante el taller)</summary><div class="codewrap"><div class="codehead">PROPUESTA OPCIONAL, no presente en el esquema actual<button class="copy" type="button">Copiar</button></div><pre><code>-- Mejoras futuras: ejecutar solo tras evaluar datos duplicados.
+CREATE UNIQUE INDEX IF NOT EXISTS uq_citas_profesional_hora
+ON citas (profesional_id, fecha_hora);
+-- Después, traducir el error PostgreSQL 23505 en el adaptador
+-- y devolver HTTP 409. El índice impide duplicados concurrentes.</code></pre></div></details>
+<h3>Seguridad de conexión</h3><p>El archivo real <code>src/persistencia/db.js</code> utiliza <code>ssl: { rejectUnauthorized: false }</code>. Este ajuste deshabilita la verificación del certificado TLS y debe revisarse antes de utilizar el ejemplo como referencia de producción. No está relacionado con DIP, pero forma parte de la revisión técnica del repositorio.</p>
+<h3>¿Cuándo no crear más abstracciones?</h3><p>No se necesita una interfaz por cada función ni una carpeta extra para todo. Conviene introducir contratos cuando una colaboración cruza una frontera arquitectónica y aporta testabilidad o independencia frente a cambios concretos.</p>
+</section>
+<section id="taller"><h2>8. Actividad de implementación en el repositorio del equipo</h2>
+<p>Todos los equipos desarrollan la misma aplicación de reserva de citas, pero cada uno tiene su propio repositorio. Los diagramas UML A y B son ejemplos resueltos que sirven para comprender la transformación. El resultado de este taller debe verse en el código y en las pruebas del repositorio de cada equipo.</p>
+<h3>A. Preparar el repositorio y el entorno</h3>
+<p>Trabajar en una copia local del repositorio del equipo. Quien ya tenga el proyecto abierto en VS Code debe continuar allí, sin volver a clonarlo. Las líneas de terminal se ejecutan en PowerShell o Git Bash; el contenido de archivos se escribe en el editor de VS Code, no como comandos.</p>
+<ol>
+<li>Comprobar la carpeta actual, la rama activa y los cambios pendientes. Si hay modificaciones que deben conservarse, guardarlas antes de cambiar de rama.</li>
+<li>Crear una rama para el laboratorio solamente si aún no existe. Si ya fue creada, cambiar a ella; no ejecutar ambas alternativas.</li>
+<li>Instalar dependencias y crear las dos carpetas nuevas. No utilizar <code>npm init</code>, ya que el repositorio incluye <code>package.json</code>.</li>
+</ol>
+<div class="codewrap"><div class="codehead">PowerShell, terminal de VS Code: comprobaciones iniciales<button class="copy" type="button">Copiar</button></div><pre><code>Get-Location
+git status
+git branch --show-current
+# Si la rama AÚN NO existe:
+git switch -c semana9-dip-di
+# Si la rama YA existe, usar EN SU LUGAR:
+# git switch semana9-dip-di
+npm install
+New-Item -ItemType Directory -Force -Path 'src/aplicacion/contratos', 'test' | Out-Null</code></pre></div><p class="tiny">Si la rama del equipo tiene otro nombre, como <code>refactor-dip-di</code>, puede conservarse. Si <code>npm install</code> modifica <code>package-lock.json</code>, revisar primero <code>git diff -- package-lock.json</code> antes de incluirlo en el commit. Los comentarios precedidos por <code>#</code> son explicaciones, no instrucciones adicionales.</p>
+<details><summary>Alternativa para Git Bash, Linux o macOS</summary><div class="codewrap"><div class="codehead">Terminal: preparación alternativa<button class="copy" type="button">Copiar</button></div><pre><code>git status
+git branch --show-current
+# Crear la rama solo si aún no existe:
+git switch -c semana9-dip-di
+# O cambiar a la rama existente: git switch semana9-dip-di
+npm install
+mkdir -p src/aplicacion/contratos test</code></pre></div></details>
+<h4>Proteger credenciales antes de usar Supabase</h4>
+<p>En el explorador de VS Code, abrir o crear <code>.gitignore</code> en la raíz del proyecto. Es un archivo de texto: las siguientes líneas son su contenido, no comandos de PowerShell. Si ya existe, agregar solamente las reglas que falten.</p>
+<div class="codewrap"><div class="codehead">Archivo .gitignore: escribir en VS Code y guardar con Ctrl + S<button class="copy" type="button">Copiar</button></div><pre><code>node_modules/
+.env</code></pre></div><p>Comprobar en PowerShell que el archivo quedó bien guardado y que Git reconoce la exclusión:</p><div class="codewrap"><div class="codehead">PowerShell: verificar .gitignore<button class="copy" type="button">Copiar</button></div><pre><code>Get-Content .gitignore
+git check-ignore -v --no-index .env
+git ls-files -- .env</code></pre></div><p class="tiny">La segunda instrucción debe mostrar una regla similar a <code>.gitignore:2:.env</code>. La última no debería devolver resultados: si aparece <code>.env</code>, ya estaba bajo seguimiento y se debe retirar del índice antes de publicar; no basta con agregarlo a <code>.gitignore</code>. Nunca mostrar en las evidencias el contenido de <code>.env</code>.</p>
+<h3>B. Implementar DIP y DI</h3>
+<p>Aplicar los cuatro pasos del punto 5 a la versión del equipo. Es necesario conservar las reglas del dominio, los endpoints y las consultas SQL existentes. Los fragmentos suministrados son una referencia: si el equipo ha incorporado cambios propios, deberá adaptarlos sin perder funcionalidad.</p>
+<ol>
+<li>Crear <code>src/aplicacion/contratos/repositorios.js</code> y verificar los métodos requeridos de cada repositorio.</li>
+<li>Modificar <code>src/aplicacion/citaService.js</code> para eliminar los <code>require</code> hacia persistencia y recibir repositorios por parámetros.</li>
+<li>Modificar <code>src/presentacion/citasRoutes.js</code> para recibir el servicio a través de <code>crearCitasRoutes()</code>.</li>
+<li>Modificar <code>server.js</code> para que seleccione las implementaciones concretas, construya el servicio y entregue sus dependencias a las rutas.</li>
+<li>Contrastar las importaciones resultantes con el diagrama UML B. Los módulos de aplicación y dominio no deben importar <code>pg</code> ni los adaptadores concretos.</li>
+</ol>
+<p>Después de crear y modificar los archivos del apartado 5, guardar los cambios y comprobar su sintaxis. Durante la refactorización no iniciar el servidor hasta que <code>server.js</code> también se haya actualizado.</p>
+<div class="codewrap"><div class="codehead">PowerShell: verificar los cuatro módulos<button class="copy" type="button">Copiar</button></div><pre><code>node --check src/aplicacion/contratos/repositorios.js
+node --check src/aplicacion/citaService.js
+node --check src/presentacion/citasRoutes.js
+node --check server.js
+# Comprobar también que la factoría de rutas se exporta:
+node -e "const { crearCitasRoutes } = require('./src/presentacion/citasRoutes'); console.log(typeof crearCitasRoutes)"</code></pre></div><p class="tiny">Las verificaciones <code>node --check</code> terminan sin mensaje cuando la sintaxis es válida. La última instrucción debe mostrar <code>function</code> y detecta problemas que la comprobación sintáctica puede pasar por alto. Una vez ensamblados todos los módulos, también se pueden revisar las importaciones de aplicación:</p>
+<div class="codewrap"><div class="codehead">PowerShell: la aplicación no debe importar persistencia directamente<button class="copy" type="button">Copiar</button></div><pre><code>Get-ChildItem .\src\aplicacion -Filter *.js -Recurse |
+  Select-String -Pattern 'persistencia/'
+# Se espera que no haya coincidencias.</code></pre></div><h3>C. Ejecutar tres pruebas y desarrollar una cuarta</h3>
+<p>Crear <code>test/citaService.test.js</code> con las tres pruebas del punto 6. Ejecutarlas primero sin iniciar Express y sin una base de datos. Después, cada equipo debe diseñar e implementar una cuarta prueba propia, explicando qué comportamiento o regla verifica.</p>
+<p>Algunas posibilidades para elegir son: rechazar un repositorio al que le falte un método del contrato, demostrar que una fecha pasada evita consultar la disponibilidad, o comprobar que <code>consultarProfesionales()</code> funciona con un repositorio simulado. No basta con renombrar una de las tres pruebas proporcionadas.</p><div class="codewrap"><div class="codehead">Ejecutar las cuatro pruebas unitarias<button class="copy" type="button">Copiar</button></div><pre><code>node --test test/citaService.test.js</code></pre></div><p>El resultado esperado es cuatro pruebas aprobadas y ninguna conexión a PostgreSQL durante su ejecución. Para justificar la cuarta prueba, indicar la condición inicial, el resultado esperado y qué observaron al ejecutarla.</p>
+<h3>D. Comprobar que la API no cambió</h3>
+<p>Las pruebas unitarias no garantizan que el servicio quede conectado correctamente a Express. Antes de dar por terminado el refactor, realizar una verificación HTTP contra una instancia local del servidor conectada a la base de datos de pruebas del equipo.</p>
+<table><thead><tr><th>Petición</th><th>Resultado esperado</th><th>Qué demuestra</th></tr></thead><tbody>
+<tr><td><code>GET /api/salud</code></td><td>200</td><td>Express conserva su ruta de salud.</td></tr>
+<tr><td><code>GET /api/profesionales</code></td><td>200, lista JSON</td><td>Las rutas reciben el servicio y consultan los datos.</td></tr>
+<tr><td><code>GET /api/citas</code></td><td>200, lista JSON</td><td>La consulta sigue disponible.</td></tr>
+<tr><td><code>POST /api/citas</code> con reserva válida</td><td>201 e identificador</td><td>El caso de uso guarda correctamente.</td></tr>
+<tr><td>Repetir la misma reserva de forma secuencial</td><td>409</td><td>La aplicación rechaza una agenda ya ocupada.</td></tr>
+<tr><td><code>POST /api/citas</code> con fecha pasada</td><td>400</td><td>Se conserva la regla de fecha futura.</td></tr>
+</tbody></table>
+<p>Para ejecutar la API localmente, configurar <code>DATABASE_URL</code> en un archivo <code>.env</code> que no se suba a GitHub. La base de datos debe contener al menos un profesional. Abrir una terminal con <code>npm start</code> y mantenerla activa mientras se ejecutan las peticiones desde otra terminal.</p><p class="tiny">Para crear la conexión a Supabase y obtener la cadena de PostgreSQL, puede consultarse la <a href="https://github.com/ebuitrago/demo-cliente-servidor/blob/main/public/blog-semana-7.html" rel="noopener" target="_blank">guía de despliegue de la semana 7</a>. No pegar la contraseña en el código ni en las evidencias entregadas.</p><h4>Configurar la conexión local sin exponer credenciales</h4>
+<p>La variable <code>DATABASE_URL</code> de Render no se transfiere automáticamente al computador. Abrir o crear en VS Code un archivo <code>.env</code> en la raíz, con una sola asignación <code>DATABASE_URL=</code> seguida por la URI PostgreSQL real del ambiente de pruebas. El valor se obtiene del proyecto de Supabase o, si está autorizado y disponible, de la configuración del servicio en Render. Nunca copiar esa cadena en la entrega, en GitHub o en una captura.</p>
+<div class="codewrap"><div class="codehead">Archivo .env: formato de referencia, sustituir por la URI real de pruebas<button class="copy" type="button">Copiar</button></div><pre><code>DATABASE_URL=postgresql://USUARIO:CONTRASENA@HOST:6543/postgres</code></pre></div><p>Guardar el archivo y verificar que Node.js lo encuentra sin imprimir la contraseña:</p><div class="codewrap"><div class="codehead">PowerShell: comprobar la variable de entorno<button class="copy" type="button">Copiar</button></div><pre><code>Test-Path .env
+node -e "require('dotenv').config(); console.log(process.env.DATABASE_URL ? 'DATABASE_URL configurada' : 'DATABASE_URL ausente')"</code></pre></div><p class="tiny">El resultado esperado es <code>True</code> y <code>DATABASE_URL configurada</code>. Esto comprueba la presencia de la variable, no la validez de las credenciales ni la conexión. No hay que cambiar la contraseña de Supabase si todavía no se ha comprobado la configuración local.</p>
+<div class="codewrap"><div class="codehead">Terminal 1: servidor Express (con DATABASE_URL de prueba)<button class="copy" type="button">Copiar</button></div><pre><code>npm start</code></pre></div><p>Dejar esta primera terminal abierta. En una segunda terminal ejecutar las comprobaciones progresivas; la ruta de salud no utiliza PostgreSQL y permite distinguir problemas de Express frente a problemas de base de datos:</p><div class="codewrap"><div class="codehead">PowerShell, terminal 2: verificaciones de lectura<button class="copy" type="button">Copiar</button></div><pre><code>Invoke-RestMethod http://localhost:3000/api/salud
+Invoke-RestMethod http://localhost:3000/api/profesionales
+Invoke-RestMethod http://localhost:3000/api/citas</code></pre></div><p class="tiny">Si <code>/api/salud</code> devuelve <code>ok</code> y las consultas de datos fallan, revisar el mensaje <code>Error consultando profesionales:</code> en la terminal del servidor y confirmar la variable <code>DATABASE_URL</code>. No modificar DIP o DI antes de identificar el error. Si solo falta comprobar HTTP 400, la reserva con fecha pasada puede probarse sin realizar una escritura válida.</p>
+<details><summary>Si aparece EADDRINUSE porque el puerto 3000 está ocupado</summary>
+<p>Es posible que el servidor siga activo en otra terminal. Primero volver a esa terminal y detenerlo con Ctrl + C. Si no se encuentra, localizar el proceso en PowerShell y confirmar que pertenece al proyecto antes de detenerlo.</p><div class="codewrap"><div class="codehead">PowerShell: identificar el proceso que utiliza el puerto 3000<button class="copy" type="button">Copiar</button></div><pre><code>Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue |
+  Select-Object LocalPort, OwningProcess
+# Reemplazar 1234 por el PID obtenido si se necesita comprobarlo:
+Get-CimInstance Win32_Process -Filter "ProcessId = 1234" |
+  Select-Object ProcessId, Name, CommandLine</code></pre></div><p>Una vez liberado el puerto, iniciar <code>npm start</code> en una sola terminal.</p></details>
+<p>Se puede utilizar Postman con las peticiones de la tabla. Como alternativa reproducible en Windows, Linux o macOS, el siguiente script utiliza <code>fetch</code>, disponible desde Node.js 18, y no requiere instalar otra biblioteca. Genera una fecha futura al ejecutarse, registra una cita y verifica que repetirla devuelve 409.</p><div class="codewrap"><div class="codehead">Archivo nuevo: test/api-smoke.js (verificación HTTP local)<button class="copy" type="button">Copiar</button></div><pre><code>// NUEVO: test/api-smoke.js (Node.js &gt;= 18)
+// Solo para una BD propia de pruebas. Este script crea una cita.
+const assert = require('node:assert/strict');
+const BASE = process.env.BASE_URL || 'http://localhost:3000';
+
+async function solicitar(metodo, ruta, datos) {
+  const respuesta = await fetch(`${BASE}${ruta}`, {
+    method: metodo,
+    headers: datos ? { 'Content-Type': 'application/json' } : {},
+    body: datos ? JSON.stringify(datos) : undefined
+  });
+  const cuerpo = await respuesta.json();
+  return { estado: respuesta.status, cuerpo };
+}
+
+async function verificar() {
+  const salud = await solicitar('GET', '/api/salud');
+  assert.equal(salud.estado, 200);
+  const prof = await solicitar('GET', '/api/profesionales');
+  assert.equal(prof.estado, 200);
+  assert.ok(Array.isArray(prof.cuerpo) &amp;&amp; prof.cuerpo.length &gt; 0,
+    'La BD de pruebas debe contener al menos un profesional');
+  const citas = await solicitar('GET', '/api/citas');
+  assert.equal(citas.estado, 200);
+  assert.ok(Array.isArray(citas.cuerpo));
+
+  const reserva = {
+    paciente: 'Prueba Semana 9',
+    profesional_id: prof.cuerpo[0].id,
+    fecha_hora: new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString()
+  };
+  const creada = await solicitar('POST', '/api/citas', reserva);
+  assert.equal(creada.estado, 201);
+  assert.ok(creada.cuerpo.id, 'La creación debe devolver un ID');
+
+  const repetida = await solicitar('POST', '/api/citas', reserva);
+  assert.equal(repetida.estado, 409);
+
+  const pasada = await solicitar('POST', '/api/citas', {
+    ...reserva,
+    fecha_hora: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  });
+  assert.equal(pasada.estado, 400);
+  console.log('API comprobada: GET 200, POST 201, 409 y 400.');
+}
+
+verificar().catch(error =&gt; {
+  console.error('Falló la verificación HTTP:', error.message);
+  process.exitCode = 1;
+});</code></pre></div><div class="codewrap"><div class="codehead">Terminal 2: ejecutar el script contra localhost<button class="copy" type="button">Copiar</button></div><pre><code>node test/api-smoke.js</code></pre></div><div class="rule warning"><p>La verificación HTTP crea un registro en PostgreSQL. Ejecutarla únicamente sobre una base de datos propia de pruebas; no sobre el servicio común de Render ni sobre una base compartida con otros equipos. El endpoint actual no tiene operación de eliminación: al terminar, retirar el dato de prueba desde Supabase si corresponde y se cuenta con autorización. El resultado 409 se comprueba en peticiones secuenciales; no demuestra seguridad ante solicitudes simultáneas.</p></div>
+<p>Si aparece un error 500, revisar primero el registro de error de la terminal donde se ejecutó <code>npm start</code>, la variable <code>DATABASE_URL</code>, las tablas y los datos de prueba. Las cuatro pruebas unitarias aprobadas no garantizan que PostgreSQL esté configurado. Si un equipo no dispone de una base de datos de pruebas independiente para ejecutar las escrituras 201 y 409, debe consultar con el docente antes de utilizar una base compartida; no debe hacer pruebas de escritura sobre el despliegue común.</p>
+<h3>E. Documentar y entregar</h3>
+<ol>
+<li>Registrar dos diagramas de dependencias UML 2.x, antes y después del cambio, adaptados a los módulos reales de su repositorio. Los diagramas resueltos del punto 3 son una referencia, pero cada equipo debe contrastarlos con su código.</li>
+<li>Justificar tres relaciones: una dependencia permitida, una dependencia concreta que se eliminó y una dependencia del punto de composición hacia la infraestructura.</li>
+<li>Realizar un commit en la rama de trabajo y subirlo al repositorio del equipo. Entregar el enlace al commit o al pull request, no solo el enlace a la página inicial del repositorio.</li>
+<li>Adjuntar las evidencias de las cuatro pruebas unitarias y de la verificación HTTP. Explicar la cuarta prueba y registrar cualquier fallo pendiente o diferencia respecto al caso de referencia.</li>
+</ol><div class="codewrap"><div class="codehead">PowerShell: revisar, registrar y publicar solo la rama de trabajo<button class="copy" type="button">Copiar</button></div><pre><code>git branch --show-current
+git status
+git add .gitignore server.js src test
+git diff --cached --name-only
+# Comprobar que NO se han agregado .env ni node_modules.
+git commit -m "Semana 9: aplicar DIP y DI"
+git push -u origin (git branch --show-current)
+git status</code></pre></div><p class="tiny">Si <code>README.md</code> o <code>package-lock.json</code> se modificaron intencionalmente, pueden prepararse también después de revisar el diff. El comando de publicación toma el nombre de la rama activa; no es necesario que todos los equipos utilicen el mismo nombre. No realizar merge a <code>main</code> ni redesplegar Render para esta actividad.</p>
+<details><summary>Si Git indica «Author identity unknown» al crear el commit</summary><p>Git requiere un nombre y un correo para identificar el autor del commit. Configurarlos solo para este repositorio, usando datos propios o el correo privado <code>noreply</code> de GitHub:</p><div class="codewrap"><div class="codehead">PowerShell: configurar identidad local de Git si hace falta<button class="copy" type="button">Copiar</button></div><pre><code>git config --local user.name "Nombre Apellido"
+git config --local user.email "correo-de-github@ejemplo.com"
+git config --local user.name
+git config --local user.email</code></pre></div><p>Reemplazar los valores de ejemplo y volver a ejecutar <code>git commit</code>. No es necesario repetir <code>git add</code> si los archivos ya estaban preparados.</p></details><table class="exercise-table"><thead><tr><th>Entregable</th><th>Evidencia requerida</th><th>Criterio de revisión</th></tr></thead><tbody>
+<tr><td>Implementación DIP y DI</td><td>Contrato, servicio, rutas y punto de composición versionados</td><td>La aplicación no importa adaptadores concretos; el ensamblaje está en <code>server.js</code>.</td></tr>
+<tr><td>Cuatro pruebas unitarias</td><td>Código de la cuarta prueba y salida de <code>node --test</code></td><td>Cuatro pruebas aprobadas sin usar PostgreSQL; la prueba propia aporta un escenario distinto.</td></tr>
+<tr><td>Compatibilidad HTTP</td><td>Resultados o capturas de las seis verificaciones de la tabla</td><td>Se conservan rutas y códigos 200, 201, 400 y 409 en ambiente de pruebas.</td></tr>
+<tr><td>Documentación UML</td><td>Dos diagramas y tres reglas justificadas</td><td>Notación y direcciones correctas, coherentes con las importaciones del repositorio.</td></tr>
+<tr><td>Trazabilidad</td><td>URL del commit o pull request del equipo</td><td>Los archivos y cambios pueden revisarse en GitHub.</td></tr>
+</tbody></table>
+<div class="rule"><p>Entrega por equipo: enlace al commit o pull request, código de la refactorización, cuatro pruebas unitarias aprobadas, verificación HTTP y dos diagramas UML con tres reglas justificadas. No se exige redesplegar la aplicación en Render.</p></div></section>
+<footer class="foot">Universidad Central. Arquitectura de Sistemas I. Semana 9. Período 2026-2.</footer>
+</main></div>
+<script>
+for (const b of document.querySelectorAll('.copy')) b.addEventListener('click',async()=>{const t=b.closest('.codewrap').querySelector('pre').innerText;try{await navigator.clipboard.writeText(t);b.textContent='Copiado';setTimeout(()=>b.textContent='Copiar',1800)}catch{const sel=getSelection();sel.removeAllRanges();const range=document.createRange();range.selectNodeContents(b.closest('.codewrap').querySelector('pre'));sel.addRange(range);b.textContent='Seleccionado'}});
+for(const b of document.querySelectorAll('[data-quiz]'))b.addEventListener('click',()=>{const ok=b.dataset.quiz==='1';const el=document.querySelector('#quiz .answer');el.textContent=ok?'Correcto. La aplicación importa un módulo concreto y por eso cambiar el adaptador implica tocar el caso de uso.':'Revisa las importaciones reales de citaService.js: la separación en carpetas no elimina una dependencia de código.';el.className='answer '+(ok?'ok':'bad')});
+</script>
+</body></html>
