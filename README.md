@@ -2,7 +2,7 @@
 
 # Reserva de Citas — Demo en Arquitectura de Capas
 
-Sistema de referencia del curso **Arquitectura de Sistemas I** · Universidad Central · 2026-2
+Sistema de referencia del curso **Arquitectura de Sistemas I** · Universidad Central  2026-2
 
 [![Node](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)](https://expressjs.com)
@@ -95,18 +95,62 @@ En Render no hay que tocar nada: el mismo servicio redespliega este commit autom
 
 El refactor conserva deliberadamente la condición de carrera de la Semana 7 (verificar disponibilidad y luego insertar, en dos pasos, sin restricción de unicidad). Las capas organizan responsabilidades; no resuelven concurrencia — la exclusión real se garantiza en el nivel de datos con un índice de unicidad, y ese es un ejercicio de la sesión de la Semana 8.
 
+
+## Semana 9. Reglas de dependencia
+
+La aplicación incorpora el Principio de Inversión de
+Dependencias (DIP) y la Inyección de Dependencias (DI).
+
+### Cambios implementados
+
+- Contratos estructurales para los repositorios.
+- Inyección de repositorios en `citaService.js`.
+- Inyección del servicio en las rutas Express.
+- Ensamblaje de dependencias desde `server.js`.
+- Pruebas unitarias con repositorios simulados.
+
+La capa de aplicación ya no importa directamente
+los repositorios concretos de PostgreSQL.
+
+### Verificación
+
+Ejecutar las pruebas unitarias:
+
+```bash
+node --test test/citaService.test.js
+```
+
+Resultado verificado: 4 pruebas aprobadas.
+
+También se comprobó el funcionamiento de los
+endpoints GET /api/salud, GET /api/profesionales
+y GET /api/citas con el servidor local.
+
+La prueba POST /api/citas con fecha pasada
+respondió HTTP 400.
+
+### Resultado arquitectónico
+
+El servicio de aplicación puede utilizar diferentes
+implementaciones de repositorio sin modificar
+las reglas de negocio.
+
+PostgreSQL continúa funcionando como mecanismo
+de persistencia de la aplicación.
+
+
 ## Ruta del curso
 
 | Semana | Tema | Este repositorio |
 |--------|------|------------------|
 | **7** | Vista Cliente-Servidor | ✅ `server.js` plano + despliegue ([ver commit inicial](../../commits/main)) |
 | **8** | Arquitectura en Capas | ✅ Versión actual: refactor en `src/` — mismo comportamiento |
-| **9** | Reglas de dependencia | 🔜 DIP · patrón Repository · inyección de dependencias |
+| **9** | Reglas de dependencia | 🔜 DIP - patrón Repository - inyección de dependencias |
 
 El diff entre las dos primeras semanas se lee en el historial de commits: en rojo el archivo único, en verde las capas.
 
 ---
 
 <div align="center">
-<sub>Universidad Central · Ingeniería de Sistemas · Arquitectura de Sistemas I · 2026-2 · Prof. Elias Buitrago Bolivar</sub>
+<sub>Universidad Central · Ingeniería de Sistemas · Arquitectura de Sistemas I, 2026-2, Prof. Elias Buitrago Bolivar</sub>
 </div>
